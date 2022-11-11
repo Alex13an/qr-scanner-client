@@ -18,7 +18,7 @@ import tables from '../models/tables.js';
 import axios from 'axios';
 import QrValitadation from '../utils/QrValidation.js';
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://localhost:3000';
 
 export default {
   components: {
