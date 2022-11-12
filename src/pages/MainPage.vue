@@ -1,5 +1,6 @@
 <template>
   <div class="main-container">
+    <DaySelector />
     <div class="main-list">
       <div class="main-list__title">{{ labels.volunteers }}</div>
       <router-link :to="{ name: tables.volunteers.name, query: { checkOut: false } }" class="main-list__item">
@@ -23,8 +24,12 @@
 <script>
 import tables from '../models/tables.js';
 import labels from '../models/labels.js';
+import DaySelector from '../components/DaySelector.vue';
 
 export default {
+  components: {
+    DaySelector,
+  },
   beforeCreate() {
     this.tables = tables;
     this.labels = labels;

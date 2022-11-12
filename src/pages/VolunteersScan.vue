@@ -4,9 +4,11 @@
     <div class="current-data">
       <div class="current-data__title">{{ labels.volunteers }}</div>
       <div class="current-data__extra">{{ checkOut ? labels.checkOut : labels.checkIn }}</div>
+      <div class="current-data__extra">{{ getCurrentDay.label }}</div>
       <div v-if="errorMessage" class="current-data__qr-error">{{ labels.qrError + errorMessage }}</div>
       <div v-if="isLoading" class="current-data__loading">Loading...</div>
       <div v-if="successMessage" class="current-data__success">{{ successMessage }}</div>
+      <div @click="toggleOk" v-if="isOk" class="ok-window">Ok</div>
     </div>
   </div>
 </template>
@@ -18,10 +20,14 @@ import tables from '../models/tables.js';
 import axios from 'axios';
 import QrValitadation from '../utils/QrValidation.js';
 import { apiBase } from '../models/apibase.js';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
     QrScanner,
+  },
+  computed: {
+    ...mapGetters(['getCurrentDay']),
   },
   mounted() {
     const extraData = this.$route.query;
@@ -30,22 +36,25 @@ export default {
   data() {
     return {
       decoded: '',
-      day: '',
       checkOut: false,
       errorMessage: '',
       isLoading: false,
       successMessage: '',
+      isOk: true,
     };
   },
   methods: {
+    toggleOk() {
+      this.isOk = false;
+    },
+
     async onScan(decodedText) {
       try {
-        if (this.isLoading) {
+        if (this.isLoading || this.isOk) {
           return;
         }
         this.successMessage = '';
         this.errorMessage = '';
-        this.day = tables.volunteers.extra.day_one; // TODO day changing system
 
         const qrData = QrValitadation.prepareQrData(decodedText, tables.volunteers.name);
         if (!qrData.id) {
@@ -55,7 +64,7 @@ export default {
 
         this.isLoading = true;
         const res = await axios.put(apiBase + `/${tables.volunteers.name}/${qrData.id}`, {
-          day: this.day,
+          day: this.getCurrentDay.id,
           checkIn: !this.checkOut,
         });
         this.isLoading = false;
@@ -67,6 +76,7 @@ export default {
         } else {
           this.errorMessage = res.data.reason;
         }
+        this.isOk = true;
       } catch (err) {
         console.error(err);
         this.isLoading = false;
@@ -85,7 +95,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 80vw;
-  margin: 10vh 10vw 0;
+  margin: 10px 10vw 0;
 }
 
 .current-data {
@@ -95,6 +105,24 @@ export default {
   }
   &__success {
     color: green;
+  }
+}
+
+.ok-window {
+  background: var(--blue);
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  bottom: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover,
+  &:focus {
+    background: var(--light-blue);
   }
 }
 </style>
