@@ -17,8 +17,7 @@ import tables from '../models/tables.js';
 import axios from 'axios';
 import QrValitadation from '../utils/QrValidation.js';
 import events from '../models/events.js';
-
-const API_BASE = 'http://localhost:3000';
+import { apiBase } from '../models/apibase.js';
 
 export default {
   components: {
@@ -56,7 +55,7 @@ export default {
         const eventId = this.$route.params.eventId;
         const eId = eventId[1];
         const session = 'session_' + eventId[0];
-        const res = await axios.put(API_BASE + `/${tables.guests.name}/${qrData.id}`, {
+        const res = await axios.put(apiBase + `/${tables.guests.name}/${qrData.id}`, {
           eventId: eId,
           session,
         });

@@ -17,8 +17,7 @@ import labels from '../models/labels.js';
 import tables from '../models/tables.js';
 import axios from 'axios';
 import QrValitadation from '../utils/QrValidation.js';
-
-const API_BASE = 'http://localhost:3000';
+import { apiBase } from '../models/apibase.js';
 
 export default {
   components: {
@@ -54,7 +53,7 @@ export default {
         }
 
         this.isLoading = true;
-        const res = await axios.put(API_BASE + `/${tables.guests.name}/enter/${qrData.id}`);
+        const res = await axios.put(apiBase + `/${tables.guests.name}/enter/${qrData.id}`);
         this.isLoading = false;
         if (!res.data) {
           this.errorMessage = 'Server Response Error';

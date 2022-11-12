@@ -17,8 +17,7 @@ import labels from '../models/labels.js';
 import tables from '../models/tables.js';
 import axios from 'axios';
 import QrValitadation from '../utils/QrValidation.js';
-
-const API_BASE = 'https://localhost:3000';
+import { apiBase } from '../models/apibase.js';
 
 export default {
   components: {
@@ -55,7 +54,7 @@ export default {
         }
 
         this.isLoading = true;
-        const res = await axios.put(API_BASE + `/${tables.volunteers.name}/${qrData.id}`, {
+        const res = await axios.put(apiBase + `/${tables.volunteers.name}/${qrData.id}`, {
           day: this.day,
           checkIn: !this.checkOut,
         });
